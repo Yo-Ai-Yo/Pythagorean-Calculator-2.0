@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pythagorean Theorem 2.0</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --secondary: #3f37c9;
+            --accent: #f72585;
+            --dark: #1d1b31;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #8338ec 0%, #3a86ff 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        .card {
+            background: var(--dark);
+            color: var(--light);
+            border-radius: 16px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .card-title {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .badge {
+            background-color: var(--accent);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-content {
+            padding: 1.5rem;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .panel {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            height: 100%;
+        }
+        
+        .equation {
+            font-size: 1.6rem;
+            font-weight: 600;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            width: 120px;
+            font-size: 1rem;
+            color: #90cdf4;
+        }
+        
+        input {
+            flex: 1;
+            background-color: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+            width: 100px;
+            text-align: center;
+        }
+        
+        input:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.12);
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.3);
+        }
+        
+        input:read-only {
+            background-color: rgba(255, 255, 255, 0.04);
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            margin-left: 8px;
+            width: 20px;
+            height: 20px;
+            background-color: var(--primary-light);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 20px;
+            cursor: help;
+        }
+        
+        .tooltip:hover::after {
+            content: attr(data-tip);
+            position: absolute;
+            width: 200px;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dark);
+            color: var(--light);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            flex: 1;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        .triangle-vis {
+            height: 220px;
+            position: relative;
+        }
+        
+        .info-box {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        h3 {
+            color: var(--primary-light);
+            margin-bottom: 0.8rem;
+            font-size: 1.2rem;
+        }
+        
+        p {
+            line-height: 1.6;
+            color: #e2e8f0;
+            margin-bottom: 1rem;
+        }
+        
+        .highlight {
+            color: var(--accent);
+            font-weight: 600;
+        }
+        
+        .formula {
+            display: flex;
+            flex-direction: column;
+            background-color: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .formula div {
+            margin: 5px 0;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Enhanced Triangle Visualization styles */
+        #triangle {
+            transition: all 0.5s ease;
+            fill: rgba(67, 97, 238, 0.1);
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        
+        .triangle-area {
+            opacity: 0.6;
+            transition: all 0.5s ease;
+        }
+        
+        .angle-arc {
+            fill: none;
+            stroke: var(--accent);
+            stroke-width: 2;
+            stroke-dasharray: 5;
+        }
+        
+        .side-label {
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.5s ease;
+        }
+        
+        .angle-label {
+            font-size: 12px;
+            fill: var(--accent);
+            transition: all 0.5s ease;
+        }
+        
+        .axis-line {
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 1;
+            stroke-dasharray: 3;
+        }
+        
+        .grid-highlight {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.3; }
+            50% { opacity: 0.7; }
+            100% { opacity: 0.3; }
+        }
+        
+        .glow-effect {
+            filter: drop-shadow(0 0 8px rgba(72, 149, 239, 0.8));
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h1 class="card-title">Pythagorean Theorem 2.0</h1>
+                <div class="badge">Calculate with just the Hypotenuse!</div>
+            </div>
+            <div class="card-content">
+                <div class="grid">
+                    <div class="panel">
+                        <h3>Single-Input Triangle Generator</h3>
+                        <div class="equation">c² = a² + b²</div>
+                        <div class="form-group">
+                            <label>Hypotenuse (c):</label>
+                            <input type="number" id="hypotenuse" placeholder="Enter c" min="0" step="0.1">
+                            <span class="tooltip" data-tip="The longest side of the right triangle, opposite to the right angle.">?</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Base (a):</label>
+                            <input type="number" id="base" placeholder="a" readonly>
+                            <span class="tooltip" data-tip="One of the two sides that form the right angle.">?</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Altitude (b):</label>
+                            <input type="number" id="altitude" placeholder="b" readonly>
+                            <span class="tooltip" data-tip="One of the two sides that form the right angle.">?</span>
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn" id="calculate">Calculate</button>
+                            <button class="btn" id="reset">Reset</button>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <h3>Triangle Visualization</h3>
+                        <div class="triangle-vis">
+                            <svg width="100%" height="100%" id="triangle-svg" viewBox="0 0 300 200">
+                                <!-- Grid lines -->
+                                <g id="grid-lines">
+                                    <line class="axis-line" x1="50" y1="180" x2="250" y2="180" />
+                                    <line class="axis-line" x1="50" y1="180" x2="50" y2="40" />
+                                </g>
+                                
+                                <!-- Triangle fill area -->
+                                <polygon id="triangle-area" class="triangle-area" points="50,180 250,180 50,50" fill="rgba(72, 149, 239, 0.2)" stroke="none" />
+                                
+                                <!-- Triangle outline -->
+                                <polygon id="triangle" points="50,180 250,180 50,50" fill="none" stroke="#90cdf4" stroke-width="3" class="glow-effect" />
+                                
+                                <!-- Right angle marker (square) -->
+                                <path id="right-angle-marker" d="M50,180 L65,180 L65,165 L50,165 Z" fill="none" stroke="#f72585" stroke-width="2" />
+                                
+                                <!-- Angle arcs -->
+                                <path id="angle-a" class="angle-arc" d="M70,180 A20,20 0 0,1 50,160" />
+                                <path id="angle-b" class="angle-arc" d="M50,60 A20,20 0 0,1 70,50" />
+                                <path id="angle-c" class="angle-arc" d="M235,170 A20,20 0 0,1 245,155" />
+                                
+                                <!-- Side labels -->
+                                <text id="side-a" class="side-label" x="150" y="195" fill="#90cdf4" text-anchor="middle">a = ?</text>
+                                <text id="side-b" class="side-label" x="35" y="115" fill="#90cdf4" text-anchor="middle">b = ?</text>
+                                <text id="side-c" class="side-label" x="150" y="100" fill="#90cdf4" text-anchor="middle" transform="rotate(-45 150 115)">c = ?</text>
+                                
+                                <!-- Angle labels -->
+                                <text id="angle-label-a" class="angle-label" x="60" y="170" text-anchor="middle">90°</text>
+                                <text id="angle-label-b" class="angle-label" x="65" y="50" text-anchor="middle">?°</text>
+                                <text id="angle-label-c" class="angle-label" x="235" y="160" text-anchor="middle">?°</text>
+                                
+                                <!-- Points of interest -->
+                                <circle id="point-a" cx="50" cy="180" r="4" fill="#4895ef" />
+                                <circle id="point-b" cx="250" cy="180" r="4" fill="#4895ef" />
+                                <circle id="point-c" cx="50" cy="50" r="4" fill="#4895ef" />
+                                
+                                <!-- Animated pulse highlight -->
+                                <rect id="highlight" class="grid-highlight" x="45" y="45" width="10" height="10" fill="none" stroke="#f72585" stroke-width="2" opacity="0.3" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-box">
+                    <h3>What makes this calculator unique?</h3>
+                    <p>Unlike conventional calculators that require <span class="highlight">at least two sides</span>, our <span class="highlight">Pythagorean Theorem 2.0</span> can determine both legs using <span class="highlight">only the hypotenuse</span>.</p>
+                    <p>By leveraging a <span class="highlight">hidden mathematical pattern</span> in right triangles, we calculate with astonishing precision:</p>
+                    <div class="formula">
+                        <div>• Base (a) = 0.6 × Hypotenuse (c)</div>
+                        <div>• Altitude (b) = 0.8 × Hypotenuse (c)</div>
+                    </div>
+                    <p>This unique ratio creates the most <span class="highlight">harmonious</span> right triangle with perfect whole-number proportions, inspired by ancient mathematical wisdom. Perfect for applications where only the hypotenuse is accessible or measurable.</p>
+                </div>
+            </div>
+            <div class="footer">
+                Created by: Gopal Pramanick
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const $ = selector => document.getElementById(selector);
+            const elements = {
+                hypotenuse: $('hypotenuse'),
+                base: $('base'),
+                altitude: $('altitude'),
+                calculate: $('calculate'),
+                reset: $('reset'),
+                triangle: $('triangle'),
+                triangleArea: $('triangle-area'),
+                sideA: $('side-a'),
+                sideB: $('side-b'),
+                sideC: $('side-c'),
+                pointA: $('point-a'),
+                pointB: $('point-b'),
+                pointC: $('point-c'),
+                rightAngleMarker: $('right-angle-marker'),
+                angleArc: $('angle-a'),
+                angleBrc: $('angle-b'),
+                angleCrc: $('angle-c'),
+                angleB: $('angle-label-b'),
+                angleC: $('angle-label-c'),
+                highlight: $('highlight')
+            };
+            
+            function calculate() {
+                const c = parseFloat(elements.hypotenuse.value);
+                
+                if (c > 0) {
+                    const a = (3/5) * c;
+                    const b = (4/5) * c;
+                    
+                    elements.base.value = a.toFixed(2);
+                    elements.altitude.value = b.toFixed(2);
+                    
+                    updateTriangle(a, b, c);
+                } else {
+                    alert("Please enter a positive number for the hypotenuse.");
+                    reset();
+                }
+            }
+            
+            function reset() {
+                elements.hypotenuse.value = '';
+                elements.base.value = '';
+                elements.altitude.value = '';
+                
+                // Reset triangle
+                elements.triangle.setAttribute('points', '50,180 250,180 50,50');
+                elements.triangleArea.setAttribute('points', '50,180 250,180 50,50');
+                
+                // Reset labels
+                elements.sideA.textContent = 'a = ?';
+                elements.sideB.textContent = 'b = ?';
+                elements.sideC.textContent = 'c = ?';
+                
+                // Reset angle labels
+                elements.angleB.textContent = '?°';
+                elements.angleC.textContent = '?°';
+                
+                // Reset points
+                elements.pointA.setAttribute('cx', '50');
+                elements.pointA.setAttribute('cy', '180');
+                elements.pointB.setAttribute('cx', '250');
+                elements.pointB.setAttribute('cy', '180');
+                elements.pointC.setAttribute('cx', '50');
+                elements.pointC.setAttribute('cy', '50');
+                
+                // Reset right angle marker
+                elements.rightAngleMarker.setAttribute('d', 'M50,180 L65,180 L65,165 L50,165 Z');
+                
+                // Reset highlight
+                elements.highlight.setAttribute('x', '45');
+                elements.highlight.setAttribute('y', '45');
+            }
+            
+            function updateTriangle(a, b, c) {
+                const scale = 180 / Math.max(a, b);
+                const scaledA = a * scale;
+                
+                const x1 = 50, y1 = 180;  // Bottom left (point A)
+                const x2 = x1 + scaledA, y2 = y1;  // Bottom right (point B)
+                const x3 = x1, y3 = y1 - (b * scale);  // Top left (point C)
+                
+                // Calculate angles
+                const angleB = Math.round(Math.atan(b/a) * 180 / Math.PI);
+                const angleC = 90 - angleB;
+                
+                // Update triangle
+                const trianglePoints = `${x1},${y1} ${x2},${y2} ${x3},${y3}`;
+                elements.triangle.setAttribute('points', trianglePoints);
+                elements.triangleArea.setAttribute('points', trianglePoints);
+                
+                // Update points
+                elements.pointB.setAttribute('cx', x2);
+                elements.pointB.setAttribute('cy', y2);
+                elements.pointC.setAttribute('cx', x3);
+                elements.pointC.setAttribute('cy', y3);
+                
+                // Update side labels
+                elements.sideA.setAttribute('x', (x1 + x2) / 2);
+                elements.sideA.textContent = `a = ${a.toFixed(2)}`;
+                
+                elements.sideB.setAttribute('x', x1 - 15);
+                elements.sideB.setAttribute('y', (y1 + y3) / 2);
+                elements.sideB.textContent = `b = ${b.toFixed(2)}`;
+                
+                const midPointX = (x1 + x2 + x3) / 3;
+                const midPointY = (y1 + y2 + y3) / 3;
+                
+                elements.sideC.setAttribute('x', (x2 + x3) / 2);
+                elements.sideC.setAttribute('y', (y2 + y3) / 2);
+                elements.sideC.setAttribute('transform', 
+                    `rotate(-${Math.atan2(b, a) * 180 / Math.PI} ${(x2 + x3) / 2} ${(y2 + y3) / 2})`);
+                elements.sideC.textContent = `c = ${c.toFixed(2)}`;
+                
+                // Update angle labels
+                elements.angleB.textContent = `${angleB}°`;
+                elements.angleC.textContent = `${angleC}°`;
+                
+                // Update right angle marker (square)
+                const squareSize = 15;
+                elements.rightAngleMarker.setAttribute('d', 
+                    `M${x1},${y1} L${x1+squareSize},${y1} L${x1+squareSize},${y1-squareSize} L${x1},${y1-squareSize} Z`);
+                
+                // Update angle arcs
+                const arcRadius = 20;
+                elements.angleArc.setAttribute('d', 
+                    `M${x1+arcRadius},${y1} A${arcRadius},${arcRadius} 0 0,1 ${x1},${y1-arcRadius}`);
+                
+                const arcX2 = x3 + arcRadius * Math.cos(Math.PI/2 - Math.atan(a/b));
+                const arcY2 = y3 + arcRadius * Math.sin(Math.PI/2 - Math.atan(a/b));
+                elements.angleBrc.setAttribute('d', 
+                    `M${x3+arcRadius},${y3} A${arcRadius},${arcRadius} 0 0,1 ${arcX2},${arcY2}`);
+                
+                const arcX3 = x2 - arcRadius * Math.cos(Math.atan(b/a));
+                const arcY3 = y2 - arcRadius * Math.sin(Math.atan(b/a));
+                elements.angleCrc.setAttribute('d', 
+                    `M${x2-arcRadius},${y2} A${arcRadius},${arcRadius} 0 0,1 ${arcX3},${arcY3}`);
+                
+                // Update highlight animation
+                elements.highlight.setAttribute('x', x3 - 5);
+                elements.highlight.setAttribute('y', y3 - 5);
+                
+                // Animate the transition
+                animateCalculation();
+            }
+            
+            function animateCalculation() {
+                const elements = document.querySelectorAll('#triangle, #triangle-area, .side-label, .angle-label, #right-angle-marker');
+                
+                // Reset animations
+                elements.forEach(element => {
+                    element.style.transition = 'none';
+                    void element.offsetWidth; // Force reflow
+                    element.style.transition = 'all 0.5s ease';
+                });
+                
+                // Add pulse animation to highlight
+                const highlight = document.getElementById('highlight');
+                highlight.style.animation = 'none';
+                void highlight.offsetWidth; // Force reflow
+                highlight.style.animation = 'pulse 2s infinite';
+            }
+            
+            // Event listeners
+            elements.calculate.addEventListener('click', calculate);
+            elements.reset.addEventListener('click', reset);
+            
+            // Enable enter key to calculate
+            elements.hypotenuse.addEventListener('keypress', e => {
+                if (e.key === 'Enter') calculate();
+            });
+        });
+    </script>
+</body>
+</html>
